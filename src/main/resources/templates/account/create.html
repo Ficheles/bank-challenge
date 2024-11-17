@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Create Account</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@latest/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body>
+<h2>Create New Account</h2>
+<form th:action="@{/accounts/create}" th:object="${account}" method="post">
+    <div>
+        <label>Owner Name:</label>
+        <input type="text" th:field="*{ownerName}" required/>
+    </div>
+    <div>
+        <label>Account Number:</label>
+        <input type="text" th:field="*{accountNumber}" required/>
+    </div>
+    <button type="submit">Create Account</button>
+</form>
+</body>
+</html>
