@@ -14,8 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -44,7 +43,7 @@ public class AccountControllerTest {
     @WithMockUser(username = "admin", password = "admin123", roles = {"ADMIN"})
     public void testShowCreateForm() throws Exception {
 
-        Mockito.when(accountService.findAccountById(anyLong())).thenReturn(account);
+        Mockito.when(accountService.findAccountById(anyString())).thenReturn(account);
 
 
         mockMvc.perform(get("/account/create")
@@ -54,7 +53,7 @@ public class AccountControllerTest {
                 .andExpect(model().attributeExists("account")) // Verifica se o atributo "account" está no modelo
                 .andExpect(model().attribute("account", account)); // Verifica se o valor de "account" no modelo é o esperado
 
-        verify(accountService).findAccountById(anyLong());
+        verify(accountService).findAccountById(anyString());
     }
 //
 //    @Test
