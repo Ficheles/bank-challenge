@@ -69,7 +69,6 @@ public class AccountEntity {
         return version;
     }
 
-
     public UserEntity getUser() {
         return user;
     }

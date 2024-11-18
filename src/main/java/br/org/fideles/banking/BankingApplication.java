@@ -54,6 +54,7 @@ public class BankingApplication {
     public void init() {
         createUserIfNotExists("admin", "admin123", Role.ADMIN, "1162534");
         createUserIfNotExists("user", "user123", Role.USER, "987123");
+        createUserIfNotExists("fulano", "user123", Role.USER, "8722313");
     }
 
     private void createUserIfNotExists(String username, String password, String role, String account) {
@@ -65,7 +66,6 @@ public class BankingApplication {
             user.setRole(role);
 
             userRepository.save(user);
-
             createAccountIfNotExists( account, username, user);
         }
     }
@@ -77,10 +77,11 @@ public class BankingApplication {
             account.setAccountNumber(accountNumber);
             account.setOwnerName(ownerName);
             account.setBalance(BigDecimal.ZERO);
-            account.setUser(user);
 
             accountRepository.save(account);
-        }
+            account.setUser(user);
+
+            accountRepository.save(account);        }
     }
 }
 

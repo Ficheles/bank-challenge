@@ -14,7 +14,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -25,7 +24,6 @@ public class SecurityConfig {
     }
 
     private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
-
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -55,34 +53,7 @@ public class SecurityConfig {
         return http.build();
     }
 
-//    @Bean
-//    protected void configure(HttpSecurity http) throws Exception {
-//
-//        System.out.println("Uadlfdas fkladjfl kasjd lkjasd");
-//        logger.info("A operação foi realizada com sucesso!");
-//        logger.error("Erro encontrado!");
-//        logger.debug("Informações detalhadas para depuração.");
-//
-//        http
-//                .authorizeRequests()
-//                .antMatchers("/account/create").hasRole("ADMIN")  // Permite acesso à criação de conta apenas para ADMIN
-//                .anyRequest().authenticated()
-//                .and()
-//                .formLogin()
-//                .defaultSuccessUrl("/account/create", true)
-//                .permitAll();
-//
-//    }
-//
-//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        // Configuração de autenticação em memória para teste
-//        auth.inMemoryAuthentication()
-//                .withUser("admin").password("{noop}admin123").roles("ADMIN");
-//    }
-
     private AuthenticationSuccessHandler customAuthenticationSuccessHandler() {
-
-
 
         return (request, response, authentication) -> {
 
@@ -103,15 +74,10 @@ public class SecurityConfig {
             if (role.equals("ROLE_ADMIN")) {
                 response.sendRedirect("/account");
             } else if (role.equals("ROLE_USER")) {
-                response.sendRedirect("/account/"+accountId+"/view");
+                response.sendRedirect("/account/" + accountId + "/view");
             } else {
                 response.sendRedirect("/");
             }
         };
     }
 }
-
-
-
-
-
