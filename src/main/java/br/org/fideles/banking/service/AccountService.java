@@ -7,6 +7,7 @@ import br.org.fideles.banking.mapper.AccountMapper;
 import br.org.fideles.banking.model.Account;
 import br.org.fideles.banking.model.User;
 import br.org.fideles.banking.repository.AccountRepository;
+import br.org.fideles.banking.exception.InsufficientFundsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.domain.Sort;
@@ -98,7 +99,7 @@ public class AccountService {
         }
 
         if (!hasEnoughFunds(account.getBalance(), amount)) {
-            throw new RuntimeException("Insufficient funds in account: " + accountId);
+            throw new InsufficientFundsException("Insufficient funds in account: " + accountId);
         }
 
         account.setBalance(account.getBalance().subtract(amount));
