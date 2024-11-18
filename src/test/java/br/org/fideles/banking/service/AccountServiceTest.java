@@ -46,7 +46,7 @@ public class AccountServiceTest {
         when(accountRepository.save(any(AccountEntity.class))).thenReturn(accountEntity);
 
         Account account = new Account(accountEntity.getId(), accountEntity.getAccountNumber(), accountEntity.getOwnerName(), accountEntity.getBalance());
-        when(accountMapper.fromEntity(any(AccountEntity.class))).thenReturn(account);
+        when(accountMapper.toModel(any(AccountEntity.class))).thenReturn(account);
 
         Account result = accountService.createAccount(account);
 
@@ -56,7 +56,7 @@ public class AccountServiceTest {
         assertEquals(BigDecimal.valueOf(1000.0), result.getBalance());
 
         verify(accountRepository, times(1)).save(any(AccountEntity.class));
-        verify(accountMapper, times(1)).fromEntity(any(AccountEntity.class));
+        verify(accountMapper, times(1)).toModel(any(AccountEntity.class));
     }
 
     @Test
@@ -64,7 +64,7 @@ public class AccountServiceTest {
         when(accountRepository.findById(1L)).thenReturn(Optional.of(accountEntity));
 
         Account account = new Account(accountEntity.getId(), accountEntity.getAccountNumber(), accountEntity.getOwnerName(), accountEntity.getBalance());
-        when(accountMapper.fromEntity(any(AccountEntity.class))).thenReturn(account);
+        when(accountMapper.toModel(any(AccountEntity.class))).thenReturn(account);
 
         Account result = accountService.findAccountById(1L);
 
@@ -75,13 +75,13 @@ public class AccountServiceTest {
         assertEquals(BigDecimal.valueOf(1000.0), result.getBalance());
 
         verify(accountRepository, times(1)).findById(1L);
-        verify(accountMapper, times(1)).fromEntity(any(AccountEntity.class));
+        verify(accountMapper, times(1)).toModel(any(AccountEntity.class));
     }
 
     @Test
     public void testFindAccountByIdReturnNewAccountWhenNotFound() {
         when(accountRepository.findById(1L)).thenReturn(Optional.empty());
-        when(accountMapper.fromEntity(any(AccountEntity.class))).thenReturn(new Account());
+        when(accountMapper.toModel(any(AccountEntity.class))).thenReturn(new Account());
 
         Account result = accountService.findAccountById(1L);
 
@@ -92,7 +92,7 @@ public class AccountServiceTest {
         assertEquals(BigDecimal.ZERO, result.getBalance(), "Balance should be zero for a new Account.");
 
         verify(accountRepository, times(1)).findById(1L);
-        verify(accountMapper, times(1)).fromEntity(any(AccountEntity.class));
+        verify(accountMapper, times(1)).toModel(any(AccountEntity.class));
     }
 
     @Test

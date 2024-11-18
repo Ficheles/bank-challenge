@@ -2,8 +2,10 @@ package br.org.fideles.banking.service;
 
 import br.org.fideles.banking.config.SecurityConfig;
 import br.org.fideles.banking.entity.AccountEntity;
+import br.org.fideles.banking.entity.UserEntity;
 import br.org.fideles.banking.mapper.AccountMapper;
 import br.org.fideles.banking.model.Account;
+import br.org.fideles.banking.model.User;
 import br.org.fideles.banking.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.OptimisticLockingFailureException;
@@ -45,22 +47,24 @@ public class AccountService {
     public Account findAccountById(Long accountId) {
         AccountEntity accountEntity = accountRepository.findById(accountId).orElse(new AccountEntity());
 
-        return accountMapper.fromEntity(accountEntity);
+        return accountMapper.toModel(accountEntity);
     }
 
 
     @Transactional
     public Account createAccount(Account account) {
         Long accountId = Optional.ofNullable(account.getId()).orElse(0L);
+//        UserEntity = userMapper.to
         AccountEntity accountEntity = accountRepository.findById(accountId).orElse(new AccountEntity());
 
         accountEntity.setOwnerName(account.getOwnerName());
         accountEntity.setAccountNumber(account.getAccountNumber());
+
 //        accountEntity.setBalance(Optional.ofNullable(account.getBalance()).orElse(BigDecimal.ZERO));
 
         accountRepository.save(accountEntity);
 
-        return accountMapper.fromEntity(accountEntity);
+        return accountMapper.toModel(accountEntity);
     }
 
     @Transactional
@@ -153,6 +157,6 @@ public class AccountService {
 
         accountRepository.save(accountEntity);
 
-        return accountMapper.fromEntity(accountEntity);
+        return accountMapper.toModel(accountEntity);
     }
 }

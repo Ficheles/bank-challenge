@@ -2,7 +2,7 @@ package br.org.fideles.banking.controller;
 
 import br.org.fideles.banking.service.AccountService;
 import br.org.fideles.banking.model.Account;
-import org.springframework.http.ResponseEntity;
+import br.org.fideles.banking.service.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,24 +17,19 @@ import java.util.Optional;
 public class AccountController {
 
     private final AccountService accountService;
+//    private final UserService userService;
+//    private final PasswordEncoder passwordEncoder;
 
-    public AccountController(AccountService accountService) {
+    public AccountController(
+            AccountService accountService
+//            UserService userService,
+            ) {
         this.accountService = accountService;
+//        this.userService = userService;
+//        this.passwordEncoder = passwordEncoder;
     }
 
 
-//    @GetMapping("/create")
-//    public String showCreateForm(Long accountId) {
-//        accountService.findAccountById(accountId);
-//
-//        return "account/create";
-//    }
-//
-//    @GetMapping("")
-//    public String showHome() {
-////        model.addAttribute("account", new Account());
-//        return "account/index";
-//    }
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("")
     public String showAccountList(Model model) {
@@ -60,6 +55,8 @@ public class AccountController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create")
     public String createAccount(Account account) {
+
+//        User user = userService.createUser(account.getOwnerName(), account.getOwnerName()+"123", Role.USER);
         accountService.createAccount(account);
         return "redirect:/account";
     }

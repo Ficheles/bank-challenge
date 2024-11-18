@@ -21,6 +21,10 @@ public class AccountEntity {
     @Column(nullable = false)
     private BigDecimal balance;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private UserEntity user;
+
     @Version
     private Long version;  // Para controle otimista de concorrência
 
@@ -59,6 +63,15 @@ public class AccountEntity {
 
     public Long getVersion() {
         return version;
+    }
+
+
+    public UserEntity getUser() {
+        return user;
+    }
+
+    public void setUser(UserEntity user) {
+        this.user = user;
     }
 
     public void setVersion(Long version) {
