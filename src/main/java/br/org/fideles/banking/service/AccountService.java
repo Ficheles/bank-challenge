@@ -1,56 +1,66 @@
 package br.org.fideles.banking.service;
 
+import br.org.fideles.banking.config.SecurityConfig;
 import br.org.fideles.banking.entity.AccountEntity;
 import br.org.fideles.banking.mapper.AccountMapper;
 import br.org.fideles.banking.model.Account;
 import br.org.fideles.banking.repository.AccountRepository;
-//import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
 
 public class AccountService {
-//    private final AccountMapper accountMapper;
+    private final AccountMapper accountMapper;
     private final AccountRepository accountRepository;
 
+    private static final Logger logger = LoggerFactory.getLogger(AccountService.class);
+
     @Autowired
-    public AccountService(AccountRepository accountRepository) {
+    public AccountService(AccountRepository accountRepository , AccountMapper accountMapper) {
         this.accountRepository = accountRepository;
+        this.accountMapper = accountMapper;
     }
 
 
-    public Account findAccountById(Long accountId) {
-        AccountEntity accountEntity =  accountRepository.findById(accountId).orElseThrow(
-                () -> new RuntimeException("Account not found: " + accountId)
-        );
-
-        return new Account(accountEntity.getId(), accountEntity.getAccountNumber(), accountEntity.getOwnerName(), accountEntity.getBalance());
-//        return accountMapper.fromEntity(accountEntity);
-    }
-
-    private AccountEntity findAccountEntityById(Long accountId) {
+    private AccountEntity findById(Long accountId) {
         return accountRepository.findById(accountId).orElseThrow(
                 () -> new RuntimeException("Account not found: " + accountId)
         );
     }
 
-    @Transactional
-    public Account createAccount(String ownerName, String accountNumber) {
+    public Account findAccountById(Long accountId) {
+        AccountEntity accountEntity = accountRepository.findById(accountId).orElse(new AccountEntity());
 
-        AccountEntity accountEntity = new AccountEntity();
-        accountEntity.setOwnerName(ownerName);
-        accountEntity.setAccountNumber(accountNumber);
-        accountEntity.setBalance(BigDecimal.ZERO);
+        return accountMapper.fromEntity(accountEntity);
+    }
+
+
+    @Transactional
+    public Account createAccount(Account account) {
+        Long accountId = Optional.ofNullable(account.getId()).orElse(0L);
+        AccountEntity accountEntity = accountRepository.findById(accountId).orElse(new AccountEntity());
+
+        accountEntity.setOwnerName(account.getOwnerName());
+        accountEntity.setAccountNumber(account.getAccountNumber());
+//        accountEntity.setBalance(Optional.ofNullable(account.getBalance()).orElse(BigDecimal.ZERO));
 
         accountRepository.save(accountEntity);
-        return new Account(accountEntity.getId(), accountEntity.getAccountNumber(), accountEntity.getOwnerName(), accountEntity.getBalance());
 
-//        return accountMapper.fromEntity(accountEntity);
+        return accountMapper.fromEntity(accountEntity);
     }
 
     @Transactional
@@ -62,7 +72,7 @@ public class AccountService {
             throw new IllegalArgumentException("O valor do crédito deve ser positivo.");
         }
 
-        AccountEntity account = this.findAccountEntityById(accountId);
+        AccountEntity account = this.findById(accountId);
         account.setBalance(account.getBalance().add(amount));
 
         return accountRepository.save(account);
@@ -70,15 +80,12 @@ public class AccountService {
 
     @Transactional
     public AccountEntity debit(Long accountId, BigDecimal amount) {
-//         Não utiliza o version;
-//        AccountEntity account = accountRepository.findByIdWithLock(accountId)
-//                .orElseThrow(() -> new RuntimeException("Account not found"));
+        AccountEntity account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new RuntimeException("Account not found: " + accountId));
 
         if (amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("O valor do débito deve ser positivo.");
         }
-
-        AccountEntity account = this.findAccountEntityById(accountId);
 
         if (!hasEnoughFunds(account.getBalance(), amount)) {
             throw new RuntimeException("Insufficient funds in account: " + accountId);
@@ -86,9 +93,11 @@ public class AccountService {
 
         account.setBalance(account.getBalance().subtract(amount));
 
-         accountRepository.save(account);
-
-        return account;
+        try {
+            return accountRepository.save(account);  // O JPA vai usar a versão para controlar o bloqueio otimista
+        } catch (OptimisticLockingFailureException e) {
+            throw new RuntimeException("A conta foi modificada por outra transação. Tente novamente.", e);
+        }
     }
 
 
@@ -119,9 +128,31 @@ public class AccountService {
 //        accountRepository.save(toAccount);
     }
 
-
-    private  boolean hasEnoughFunds(BigDecimal balance, BigDecimal amount) {
+    private boolean hasEnoughFunds(BigDecimal balance, BigDecimal amount) {
         return balance.compareTo(amount) >= 0;
     }
 
+    public List<Account> getAllAccounts() {
+        Sort sort = Sort.by(Sort.Order.asc("ownerName"));  // Ordenação crescente pelo campo 'ownerName'
+
+        List<AccountEntity> accountEntities = accountRepository.findAll(sort);
+
+        return accountEntities.stream()
+                .map(accountEntity -> new Account(accountEntity.getId(),
+                        accountEntity.getAccountNumber(),
+                        accountEntity.getOwnerName(),
+                        accountEntity.getBalance()))
+                .collect(Collectors.toList());
+    }
+
+    public Account updateAccount(Account account) {
+        AccountEntity accountEntity = accountRepository.findById(account.getId()).orElse(new AccountEntity());
+
+        accountEntity.setOwnerName(account.getOwnerName());
+        accountEntity.setAccountNumber(account.getAccountNumber());
+
+        accountRepository.save(accountEntity);
+
+        return accountMapper.fromEntity(accountEntity);
+    }
 }

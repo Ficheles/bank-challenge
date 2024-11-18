@@ -14,12 +14,7 @@ import java.util.Optional;
 
 @Repository
 public interface AccountRepository extends JpaRepository<AccountEntity, Long> {
-//    @Lock(LockModeType.PESSIMISTIC_WRITE)
-//    @Query("SELECT a FROM Account a WHERE a.id = :id")
-//    Optional<AccountEntity> findByIdWithLock(Long id);
-
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
-    Optional<AccountEntity> findById(@Param("id") Long id);
-
     Optional<AccountEntity> findByAccountNumber(String accountNumber);
+
+    boolean existsByAccountNumber(String accountNumber);
 }

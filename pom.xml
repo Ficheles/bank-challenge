@@ -48,6 +48,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
+            <optional>true</optional>
         </dependency>
 
 <!--        <dependency>-->
@@ -88,7 +89,6 @@
             <scope>test</scope>
         </dependency>
 
-
         <!-- Dependência do Mockito para mockar o serviço -->
         <dependency>
             <groupId>org.mockito</groupId>
@@ -104,6 +104,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
+                    <fork>true</fork>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>

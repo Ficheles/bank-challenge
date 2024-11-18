@@ -56,4 +56,12 @@ public class AccountEntity {
     public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
+    }
 }

@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
@@ -17,8 +18,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(AccountController.class)
 public class AccountControllerTest {
@@ -41,17 +41,33 @@ public class AccountControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "admin", password = "admin123", roles = {"ADMIN"})
     public void testShowCreateForm() throws Exception {
-        // Simular comportamento do accountService.findAccountById
+
         Mockito.when(accountService.findAccountById(anyLong())).thenReturn(account);
 
-        mockMvc.perform(get("/account/create").param("accountId", "1"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("account/create"));
 
-        // Verificar se o método do service foi chamado corretamente
+        mockMvc.perform(get("/account/create")
+                        .param("accountId", "1"))
+                .andExpect(status().isOk()) // Espera-se um status HTTP 200 OK
+                .andExpect(view().name("account/create")) // A view esperada é "account/create"
+                .andExpect(model().attributeExists("account")) // Verifica se o atributo "account" está no modelo
+                .andExpect(model().attribute("account", account)); // Verifica se o valor de "account" no modelo é o esperado
+
         verify(accountService).findAccountById(anyLong());
     }
+//
+//    @Test
+//    public void testShowCreateForm() throws Exception {
+//
+//        Mockito.when(accountService.findAccountById(anyLong())).thenReturn(account);
+//
+//        mockMvc.perform(get("/account/create").param("accountId", "1"))
+//                .andExpect(status().isOk())
+//                .andExpect(view().name("account/create"));
+//
+//        verify(accountService).findAccountById(anyLong());
+//    }
 
 //    @Test
 //    public void testCreateAccount() throws Exception {
