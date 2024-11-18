@@ -47,6 +47,51 @@ mvn spring-boot:run
 http://localhost:8080
 ```
 
+### Utilizando Docker
+
+#### Pré-requisitos
+
+- Docker e Docker Compose instalados
+
+**Passos**
+
+1. Construa e inicie os containers:
+
+   1.1 Este comando é necessario somente a primeira vez para criar a imagem docker
+
+```bash
+docker-compose up --build
+```
+
+2. Para executar os containers:
+
+   2.1 Sempre que for utilizar a aplicação via docker
+
+```bash
+docker-compose up
+```
+
+3. Acesse a aplicação no navegador:
+
+```bash
+http://localhost:8080
+```
+
+**Docker Compose**
+
+O arquivo docker-compose.yml inclui:
+
+- Um container para a aplicação Java.
+- Um container para o banco de dados PostgreSQL.
+
+**Parar os Containers**
+
+Para encerrar os serviços:
+
+```bash
+docker-compose down
+```
+
 ## 🧪 Executando os Testes
 
 Para rodar os testes unitários e de integração, utilize o comando abaixo:
