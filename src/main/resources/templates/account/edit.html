@@ -1,31 +1,70 @@
 <div class="container mt-5">
-    <h2 class="mb-4">Editar Conta - <span class="badge text-bg-light px-3 py-2" th:text="${account.id}"></span></h2>
+  <h2 class="mb-4">
+    Editar Conta -
+    <span class="badge text-bg-light px-3 py-2" th:text="${account.id}"></span>
+  </h2>
 
-    <form action="#" th:action="@{/account/create}" th:object="${account}" method="post">
+  <form
+    action="#"
+    th:action="@{/account/create}"
+    th:object="${account}"
+    method="post"
+  >
+    <div class="mb-3">
+      <label for="ownerName">Nome do Titular</label>
+      <input
+        type="text"
+        id="ownerName"
+        th:field="*{ownerName}"
+        class="form-control"
+        placeholder="Digite o nome do titular"
+        required
+      />
+      <input
+        type="hidden"
+        id="accountId"
+        name="id"
+        class="form-control"
+        th:value="${account.id}"
+        readonly
+      />
+    </div>
 
-        <div class="mb-3">
-            <label for="ownerName">Nome do Titular</label>
-            <input type="text" id="ownerName" th:field="*{ownerName}" class="form-control" placeholder="Digite o nome do titular" required />
-            <input type="hidden" id="accountId" name="id" class="form-control" th:value="${account.id}" readonly>
-        </div>
+    <div class="mb-3">
+      <label for="accountNumber">Número da Conta</label>
+      <input
+        type="text"
+        id="accountNumber"
+        th:field="*{accountNumber}"
+        class="form-control"
+        placeholder="Digite o número da conta"
+        required
+      />
+    </div>
 
+    <div class="mb-3">
+      <label for="accountNumber">Saldo</label>
+      <div class="input-group">
+        <span class="input-group-text">R$</span>
+        <input
+          type="text"
+          id="balance"
+          th:field="*{balance}"
+          class="form-control"
+          placeholder="Digite o valor inicial"
+          value="0"
+          readonly
+        />
+      </div>
+    </div>
 
-        <div class="mb-3">
-            <label for="accountNumber">Número da Conta</label>
-            <input type="text" id="accountNumber" th:field="*{accountNumber}" class="form-control" placeholder="Digite o número da conta" required />
-        </div>
-
-        <div class="mb-3">
-            <label for="accountNumber">Saldo</label>
-            <div class="input-group">
-                <span class="input-group-text">R$</span>
-                <input type="text" id="balance" th:field="*{balance}" class="form-control" placeholder="Digite o valor inicial" value="0" readonly/>
-            </div>
-        </div>
-
-        <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
-            <button type="submit" class="btn btn-primary">Salvar</button>
-            <a href="/account" class="btn btn-warning">voltar</a>
-        </div>
-    </form>
+    <div
+      class="btn-toolbar justify-content-between"
+      role="toolbar"
+      aria-label="Toolbar with button groups"
+    >
+      <button type="submit" class="btn btn-primary">Salvar</button>
+      <a href="/account" class="btn btn-warning">voltar</a>
+    </div>
+  </form>
 </div>

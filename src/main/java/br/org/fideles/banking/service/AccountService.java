@@ -63,7 +63,6 @@ public class AccountService {
     @Transactional
     public Account createAccount(Account account, UserEntity user) {
         Long accountId = Optional.ofNullable(account.getId()).orElse(0L);
-//        UserEntity = userMapper.to
         AccountEntity accountEntity = accountRepository.findById(accountId).orElse(new AccountEntity(user));
 
         accountEntity.setOwnerName(account.getOwnerName());
@@ -78,8 +77,6 @@ public class AccountService {
 
     @Transactional
     public AccountEntity credit(String accountId, BigDecimal amount) {
-//        AccountEntity account = accountRepository.findByIdWithLock(accountId)
-//                .orElseThrow(() -> new RuntimeException("Account not found"));
 
         if (amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("O valor do crédito deve ser positivo.");
@@ -107,7 +104,7 @@ public class AccountService {
         account.setBalance(account.getBalance().subtract(amount));
 
         try {
-            return accountRepository.save(account);  // O JPA vai usar a versão para controlar o bloqueio otimista
+            return accountRepository.save(account);
         } catch (OptimisticLockingFailureException e) {
             throw new RuntimeException("A conta foi modificada por outra transação. Tente novamente.", e);
         }
@@ -116,9 +113,7 @@ public class AccountService {
 
     @Transactional
     public void transfer(String fromAccountId, String toAccountId, BigDecimal amount) {
-        // Deduct amount from source account
         this.debit(fromAccountId, amount);
-        // Add amount to destination account
         this.credit(toAccountId, amount);
     }
 
@@ -127,7 +122,7 @@ public class AccountService {
     }
 
     public List<Account> getAllAccounts() {
-        Sort sort = Sort.by(Sort.Order.asc("ownerName"));  // Ordenação crescente pelo campo 'ownerName'
+        Sort sort = Sort.by(Sort.Order.asc("ownerName")); 
 
         List<AccountEntity> accountEntities = accountRepository.findAll(sort);
 

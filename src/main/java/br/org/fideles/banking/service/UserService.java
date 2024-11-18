@@ -17,7 +17,6 @@ public class UserService {
     private final UserRepository userRepository;
 
     private final PasswordEncoder passwordEncoder;
-//    private  final UserMapper userMapper;
 
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
@@ -25,7 +24,7 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-//    @Transactional
+    @Transactional
     public UserEntity getOrCreateUser(String username, String password, String role) {
 
         return userRepository.findByUsername(username)
@@ -38,12 +37,5 @@ public class UserService {
 
                     return userRepository.save(newUser);
                 });
-
     }
-
-
-//    public  boolean existsByUsername(String username) {
-//        return userRepository.existsByUsername(username);
-//    }
-
 }

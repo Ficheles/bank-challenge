@@ -12,7 +12,6 @@ public class CustomUserDetails implements UserDetails {
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
 
-    // Construtor, getters, setters...
     public CustomUserDetails(){}
 
     public CustomUserDetails(

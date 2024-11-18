@@ -19,7 +19,6 @@ public class SiteController {
 
     @GetMapping("/sobre")
     public String aboutPage(Model model) {
-//        model.addAttribute("pageTitle", "Sobre Nós");
         model.addAttribute("body", "pages/about");
 
         return "layout";

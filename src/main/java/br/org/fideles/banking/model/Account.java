@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 
 public class Account {
 
-//    private Long id;
     private Long id = 0L;
 
     private String accountNumber;
@@ -53,14 +52,4 @@ public class Account {
     public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
-
-    @Override
-    public String toString() {
-        return "AccountNumber: " + this.getAccountNumber() + "\n" +
-               "Owner Name: " + this.getOwnerName() + "\n" +
-                "Balance: " + this.getBalance().toString() ;
-    }
 }
-
-
-

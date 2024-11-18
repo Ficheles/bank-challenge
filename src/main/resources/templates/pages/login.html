@@ -3,17 +3,14 @@
     <div class="col-md-4 p-5 shadow-lg p-3 bg-body-tertiary rounded">
       <h2 class="text-center mb-4">Login</h2>
 
-      <!-- Mensagem de erro -->
       <div th:if="${param.error}" class="alert alert-danger">
         Credenciais inválidas. Tente novamente.
       </div>
 
-      <!-- Mensagem de logout -->
       <div th:if="${param.logout}" class="alert alert-success">
         Você foi deslogado com sucesso.
       </div>
 
-      <!-- Formulário de Login -->
       <form th:action="@{/login}" method="post">
         <div class="mb-3">
           <label for="username" class="form-label">Usuário</label>

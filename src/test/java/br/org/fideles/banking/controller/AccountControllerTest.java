@@ -48,10 +48,10 @@ public class AccountControllerTest {
 
         mockMvc.perform(get("/account/create")
                         .param("accountId", "1"))
-                .andExpect(status().isOk()) // Espera-se um status HTTP 200 OK
-                .andExpect(view().name("account/create")) // A view esperada é "account/create"
-                .andExpect(model().attributeExists("account")) // Verifica se o atributo "account" está no modelo
-                .andExpect(model().attribute("account", account)); // Verifica se o valor de "account" no modelo é o esperado
+                .andExpect(status().isOk()) 
+                .andExpect(view().name("account/create"))
+                .andExpect(model().attributeExists("account"))
+                .andExpect(model().attribute("account", account));
 
         verify(accountService).findAccountById(anyString());
     }

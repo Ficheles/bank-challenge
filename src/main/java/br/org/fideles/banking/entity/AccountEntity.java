@@ -26,7 +26,7 @@ public class AccountEntity {
     private UserEntity user;
 
     @Version
-    private Long version;  // Para controle otimista de concorrência
+    private Long version;
 
     public AccountEntity(){};
     public AccountEntity(UserEntity user) {

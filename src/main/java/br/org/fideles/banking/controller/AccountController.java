@@ -20,7 +20,6 @@ public class AccountController {
 
     private final AccountService accountService;
     private final UserService userService;
-//    private final PasswordEncoder passwordEncoder;
 
     public AccountController(
             AccountService accountService,
@@ -28,7 +27,6 @@ public class AccountController {
             ) {
         this.accountService = accountService;
         this.userService = userService;
-//        this.passwordEncoder = passwordEncoder;
     }
 
 

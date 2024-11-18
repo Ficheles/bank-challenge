@@ -125,7 +125,6 @@ public class AccountServiceTest {
 
     @Test
     public void testCreditThrowsExceptionWhenAmountIsNegative() {
-//        Long accountId = 1L;
         BigDecimal amount = new BigDecimal("-10.00");
 
         assertThrows(IllegalArgumentException.class, () -> accountService.credit(accountNumber1, amount));

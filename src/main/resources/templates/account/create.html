@@ -1,33 +1,58 @@
 <div class="container mt-5">
-    <h1 class="mb-4">Criação de Conta</h1>
+  <h1 class="mb-4">Criação de Conta</h1>
 
-    <!-- Formulário de criação de conta -->
-    <form action="#" th:action="@{/account/create}" th:object="${account}" method="post">
+  <form
+    action="#"
+    th:action="@{/account/create}"
+    th:object="${account}"
+    method="post"
+  >
+    <div class="form-group mb-4">
+      <label for="ownerName">Nome do Titular</label>
+      <input
+        type="text"
+        id="ownerName"
+        th:field="*{ownerName}"
+        class="form-control"
+        placeholder="Digite o nome do titular"
+        required
+      />
+    </div>
 
-        <!-- Campo para o nome do titular -->
-        <div class="form-group mb-4">
-            <label for="ownerName">Nome do Titular</label>
-            <input type="text" id="ownerName" th:field="*{ownerName}" class="form-control" placeholder="Digite o nome do titular" required />
-        </div>
+    <div class="form-group mb-4">
+      <label for="accountNumber">Número da Conta</label>
+      <input
+        type="text"
+        id="accountNumber"
+        th:field="*{accountNumber}"
+        class="form-control"
+        placeholder="Digite o número da conta"
+        required
+      />
+    </div>
 
+    <div class="form-group mb-4">
+      <label for="accountNumber">Saldo</label>
+      <div class="input-group">
+        <span class="input-group-text">R$</span>
+        <input
+          type="text"
+          id="balance"
+          th:field="*{balance}"
+          class="form-control"
+          placeholder="Digite o valor inicial"
+          value="0"
+        />
+      </div>
+    </div>
 
-        <div class="form-group mb-4">
-            <label for="accountNumber">Número da Conta</label>
-            <input type="text" id="accountNumber" th:field="*{accountNumber}" class="form-control" placeholder="Digite o número da conta" required />
-        </div>
-
-        <div class="form-group mb-4">
-            <label for="accountNumber">Saldo</label>
-            <div class="input-group">
-                <span class="input-group-text">R$</span>
-                <input type="text" id="balance" th:field="*{balance}" class="form-control" placeholder="Digite o valor inicial" value="0" />
-            </div>
-        </div>
-
-        <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
-            <button type="submit" class="btn btn-primary">Salvar</button>
-            <a href="/account" class="btn btn-warning">voltar</a>
-        </div>
-    </form>
+    <div
+      class="btn-toolbar justify-content-between"
+      role="toolbar"
+      aria-label="Toolbar with button groups"
+    >
+      <button type="submit" class="btn btn-primary">Salvar</button>
+      <a href="/account" class="btn btn-warning">voltar</a>
+    </div>
+  </form>
 </div>
-

@@ -20,7 +20,6 @@ import java.math.BigDecimal;
 
 import java.util.Map;
 
-//@SpringBootApplication
 @SpringBootApplication(scanBasePackages = "br.org.fideles.banking")
 @ComponentScan(basePackages = "br.org.fideles.banking")
 @EntityScan(basePackages = "br.org.fideles.banking.entity")
@@ -43,9 +42,8 @@ public class BankingApplication {
 
     @PostConstruct
     public void init() {
-//        createUserIfNotExists("admin", "admin123", Role.ADMIN, "11111");
-//        createUserIfNotExists("user", "user123", Role.USER, "22222");
-//        createUserIfNotExists("fulano", "fulano123", Role.USER, "8722313");
+        createUserIfNotExists("admin", "admin123", Role.ADMIN, "11111");
+        createUserIfNotExists("user", "user123", Role.USER, "22222");
     }
 
     private void createUserIfNotExists(String username, String password, String role, String account) {
@@ -69,7 +67,7 @@ public class BankingApplication {
             account.setOwnerName(ownerName);
             account.setBalance(BigDecimal.ZERO);
 
-            accountRepository.save(account);
+            // accountRepository.save(account);
             account.setUser(user);
 
             accountRepository.save(account);        }
