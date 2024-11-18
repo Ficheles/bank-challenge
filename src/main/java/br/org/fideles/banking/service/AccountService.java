@@ -29,6 +29,7 @@ public class AccountService {
     private final AccountMapper accountMapper;
     private final AccountRepository accountRepository;
 
+
     private static final Logger logger = LoggerFactory.getLogger(AccountService.class);
 
     @Autowired
@@ -52,15 +53,15 @@ public class AccountService {
 
 
     @Transactional
-    public Account createAccount(Account account) {
+    public Account createAccount(Account account, UserEntity user) {
         Long accountId = Optional.ofNullable(account.getId()).orElse(0L);
 //        UserEntity = userMapper.to
-        AccountEntity accountEntity = accountRepository.findById(accountId).orElse(new AccountEntity());
+        AccountEntity accountEntity = accountRepository.findById(accountId).orElse(new AccountEntity(user));
 
         accountEntity.setOwnerName(account.getOwnerName());
         accountEntity.setAccountNumber(account.getAccountNumber());
 
-//        accountEntity.setBalance(Optional.ofNullable(account.getBalance()).orElse(BigDecimal.ZERO));
+        accountEntity.setBalance(Optional.ofNullable(account.getBalance()).orElse(BigDecimal.ZERO));
 
         accountRepository.save(accountEntity);
 

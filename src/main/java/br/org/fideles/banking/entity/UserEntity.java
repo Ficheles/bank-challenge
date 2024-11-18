@@ -1,7 +1,11 @@
 package br.org.fideles.banking.entity;
 
 import lombok.Data;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @Entity
@@ -19,6 +23,26 @@ public class UserEntity {
 
     @Column(nullable = false)
     private String role;
+
+    public UserEntity() {}
+
+    public UserEntity(String username, String password, String role) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getSid() {
+        return  String.valueOf(id);
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getUsername() {
         return username;

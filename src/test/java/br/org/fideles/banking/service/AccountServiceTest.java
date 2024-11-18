@@ -4,9 +4,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import br.org.fideles.banking.entity.AccountEntity;
+import br.org.fideles.banking.entity.UserEntity;
 import br.org.fideles.banking.mapper.AccountMapper;
 import br.org.fideles.banking.model.Account;
 import br.org.fideles.banking.repository.AccountRepository;
+import br.org.fideles.banking.util.Role;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -39,6 +41,7 @@ public class AccountServiceTest {
         accountEntity.setAccountNumber("112233");
         accountEntity.setOwnerName("Giovanna");
         accountEntity.setBalance(BigDecimal.valueOf(1000.00));
+        accountEntity.setUser(new UserEntity(accountEntity.getOwnerName(),accountEntity.getOwnerName() + "123", Role.USER));
     }
 
     @Test
@@ -48,7 +51,7 @@ public class AccountServiceTest {
         Account account = new Account(accountEntity.getId(), accountEntity.getAccountNumber(), accountEntity.getOwnerName(), accountEntity.getBalance());
         when(accountMapper.toModel(any(AccountEntity.class))).thenReturn(account);
 
-        Account result = accountService.createAccount(account);
+        Account result = accountService.createAccount(account, accountEntity.getUser());
 
         assertNotNull(result);
         assertEquals("112233", result.getAccountNumber());

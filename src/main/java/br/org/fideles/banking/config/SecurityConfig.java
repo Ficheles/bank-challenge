@@ -1,5 +1,7 @@
 package br.org.fideles.banking.config;
 
+import br.org.fideles.banking.entity.CustomUserDetails;
+import br.org.fideles.banking.service.CustomUserDetailsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -34,7 +36,7 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
                 .antMatchers("/", "/login", "/sobre").permitAll()
-                .antMatchers("/account/create").hasRole("ADMIN")
+                .antMatchers("/account", "/account/create", "/account/**/edit").hasRole("ADMIN")
                 .antMatchers("/account/**").hasAnyRole("USER", "ADMIN")
                 .anyRequest().authenticated()
                 .and()
@@ -42,17 +44,13 @@ public class SecurityConfig {
                 .formLogin()
                 .loginPage("/login")
                 .defaultSuccessUrl("/")
+                .successHandler(customAuthenticationSuccessHandler())
                 .permitAll()
-//                .successHandler(customAuthenticationSuccessHandler())
-
                 .and()
                 .logout()
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/")
                 .permitAll();
-//                .logout()
-//                .logoutSuccessUrl("/login?logout")
-//                .permitAll();
 
         return http.build();
     }
@@ -84,9 +82,18 @@ public class SecurityConfig {
 
     private AuthenticationSuccessHandler customAuthenticationSuccessHandler() {
 
-        System.out.println("passei AuthenticationSuccessHandler");
+
 
         return (request, response, authentication) -> {
+
+            Object principal = authentication.getPrincipal();
+            Long accountId = 0l;
+
+            if (principal instanceof CustomUserDetails) {
+                CustomUserDetails userDetails = (CustomUserDetails) principal;
+                accountId = userDetails.getAccountId();
+            }
+
             String role = authentication.getAuthorities().stream()
                     .findFirst()
                     .map(GrantedAuthority::getAuthority)
@@ -94,9 +101,9 @@ public class SecurityConfig {
 
             System.out.println("Role: " + role);
             if (role.equals("ROLE_ADMIN")) {
-                response.sendRedirect("/account/create");
-            } else if (role.equals("ROLE_USER")) {
                 response.sendRedirect("/account");
+            } else if (role.equals("ROLE_USER")) {
+                response.sendRedirect("/account/"+accountId+"/view");
             } else {
                 response.sendRedirect("/");
             }

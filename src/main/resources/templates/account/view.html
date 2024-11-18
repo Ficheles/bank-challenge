@@ -3,7 +3,8 @@
         <div class="col-md-6">
             <div class="card border-0 shadow-lg">
                 <div class="card-body p-5 position-relative">
-                    <button type="button" class="btn-close position-absolute top-0 end-0 m-3" aria-label="Close" onclick="window.location.href='/account'"></button>
+                    <button type="button" class="btn-close position-absolute top-0 end-0 m-3" aria-label="Close" onclick="window.location.href='/account'" sec:authorize="hasRole('ADMIN')"></button>
+                    <button type="button" class="btn-close position-absolute top-0 end-0 m-3" aria-label="Close" onclick="window.location.href='/'" sec:authorize="hasRole('USER')"></button>
 
                     <div class="text-center mb-4">
                         <i class="bi bi-person-circle text-primary" style="font-size: 4rem;"></i>
@@ -12,13 +13,13 @@
 
                     <div class="account-info">
                         <div class="mb-4">
-                            <label class="text-muted small">Account Number</label>
-                            <h4 th:text="${account.accountNumber}"></h4>
+                            <label class="text-muted small">Account ID</label>
+                            <h4  th:text="${account.id}"></h4>
                         </div>
 
                         <div class="mb-4">
-                            <label class="text-muted small">Account ID</label>
-                            <h4  th:text="${account.id}"></h4>
+                            <label class="text-muted small">Account Number</label>
+                            <h4 th:text="${account.accountNumber}"></h4>
                         </div>
 
                         <div class="mb-4">

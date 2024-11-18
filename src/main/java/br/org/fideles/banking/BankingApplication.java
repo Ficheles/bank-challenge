@@ -52,15 +52,11 @@ public class BankingApplication {
 
     @PostConstruct
     public void init() {
-        createUserIfNotExists("admin", "admin123", Role.ADMIN);
-        createUserIfNotExists("user", "user123", Role.USER);
-
-//        createAccountIfNotExists("Joh Smith", "12345", new BigDecimal(50L));
-//        createAccountIfNotExists("Fulano", "12345", new BigDecimal(0L));
-//        createAccountIfNotExists("Beltrano", "12345", new BigDecimal(10L));
+        createUserIfNotExists("admin", "admin123", Role.ADMIN, "1162534");
+        createUserIfNotExists("user", "user123", Role.USER, "987123");
     }
 
-    private void createUserIfNotExists(String username, String password, String role) {
+    private void createUserIfNotExists(String username, String password, String role, String account) {
         if (!userRepository.existsByUsername(username)) {
             UserEntity user = new UserEntity();
 
@@ -69,31 +65,23 @@ public class BankingApplication {
             user.setRole(role);
 
             userRepository.save(user);
-            System.out.println("Usuário " + username + " criado com sucesso.");
+
+            createAccountIfNotExists( account, username, user);
         }
     }
 
-//    private void createAccountIfNotExists(String accountNumber, String ownerName, BigDecimal balance) {
-//        if (!accountRepository.existsByAccountNumber(accountNumber)) {
-//            AccountEntity account = new AccountEntity();
-//
-//            account.setAccountNumber(accountNumber);
-//            account.setOwnerName(ownerName);
-//            account.setBalance(balance);
-//
-//            accountRepository.save(account);
-//            System.out.println("Account " + ownerName + " criado com sucesso.");
-//        }
-//    }
-//
-//    private void test(long accountId ) {
-//        AccountService service = new AccountService(accountRepository, new AccountMapper());
-//
-//        System.out.println("-----------------------------------------------------------------------------");
-//        Account account = service.findAccountById(accountId);
-//        System.out.println("Account: " + account);
-//        System.out.println("-----------------------------------------------------------------------------");
-//    }
+    private void createAccountIfNotExists(String accountNumber, String ownerName,  UserEntity user) {
+        if (!accountRepository.existsByAccountNumber(accountNumber)) {
+            AccountEntity account = new AccountEntity();
+
+            account.setAccountNumber(accountNumber);
+            account.setOwnerName(ownerName);
+            account.setBalance(BigDecimal.ZERO);
+            account.setUser(user);
+
+            accountRepository.save(account);
+        }
+    }
 }
 
 

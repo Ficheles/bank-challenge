@@ -5,12 +5,17 @@ import br.org.fideles.banking.mapper.UserMapper;
 import br.org.fideles.banking.model.User;
 
 import br.org.fideles.banking.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Service
 public class UserService {
 
     private final UserRepository userRepository;
+
     private final PasswordEncoder passwordEncoder;
 //    private  final UserMapper userMapper;
 
@@ -23,7 +28,7 @@ public class UserService {
     }
 
     @Transactional
-    public User createUser(String username, String password, String role) {
+    public UserEntity createUser(String username, String password, String role) {
         UserEntity user = new UserEntity();
 
         user.setUsername(username);
@@ -33,8 +38,7 @@ public class UserService {
         userRepository.save(user);
         System.out.println("Usuário " + username + " criado com sucesso.");
 
-         return new User();
-//        return userMapper.fromEntity(user);
+         return user;
     }
 
 

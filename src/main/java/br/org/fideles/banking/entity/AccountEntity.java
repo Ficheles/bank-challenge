@@ -28,6 +28,10 @@ public class AccountEntity {
     @Version
     private Long version;  // Para controle otimista de concorrência
 
+    public AccountEntity(){};
+    public AccountEntity(UserEntity user) {
+        this.user = user;
+    }
 
     public Long getId() {
         return id;
