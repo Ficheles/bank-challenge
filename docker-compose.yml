@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: bank-challenge-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: banking
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - poc_network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: bank-challenge
+    container_name: bank-challenge-app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/banking
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    depends_on:
+      - postgres
+    networks:
+      - poc_network
+
+volumes:
+  postgres_data:
+
+networks:
+  poc_network:
+    driver: bridge
