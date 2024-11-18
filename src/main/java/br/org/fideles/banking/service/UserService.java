@@ -20,30 +20,30 @@ public class UserService {
 //    private  final UserMapper userMapper;
 
 
-//    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapper userMapper) {
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-//        this.userMapper = userMapper;
     }
 
-    @Transactional
-    public UserEntity createUser(String username, String password, String role) {
-        UserEntity user = new UserEntity();
+//    @Transactional
+    public UserEntity getOrCreateUser(String username, String password, String role) {
 
-        user.setUsername(username);
-        user.setPassword(passwordEncoder.encode(password));
-        user.setRole(role);
+        return userRepository.findByUsername(username)
+                .orElseGet(() -> {
 
-        userRepository.save(user);
-        System.out.println("Usuário " + username + " criado com sucesso.");
+                    UserEntity newUser = new UserEntity();
+                    newUser.setUsername(username);
+                    newUser.setPassword(passwordEncoder.encode(password));
+                    newUser.setRole(role);
 
-         return user;
+                    return userRepository.save(newUser);
+                });
+
     }
 
 
-    public  boolean existsByUsername(String username) {
-        return userRepository.existsByUsername(username);
-    }
+//    public  boolean existsByUsername(String username) {
+//        return userRepository.existsByUsername(username);
+//    }
 
 }

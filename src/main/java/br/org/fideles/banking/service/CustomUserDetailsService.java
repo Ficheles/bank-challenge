@@ -32,7 +32,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         return new CustomUserDetails(
                 user.getId(),
-                account.getId(),
+                account.getAccountNumber(),
                 user.getUsername(),
                 user.getPassword(),
                 Collections.singletonList(new SimpleGrantedAuthority(user.getRole()))

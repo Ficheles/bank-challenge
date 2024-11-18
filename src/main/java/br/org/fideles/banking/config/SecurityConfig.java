@@ -58,7 +58,7 @@ public class SecurityConfig {
         return (request, response, authentication) -> {
 
             Object principal = authentication.getPrincipal();
-            Long accountId = 0l;
+            String accountId = "0";
 
             if (principal instanceof CustomUserDetails) {
                 CustomUserDetails userDetails = (CustomUserDetails) principal;

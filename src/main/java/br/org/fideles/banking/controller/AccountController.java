@@ -57,15 +57,15 @@ public class AccountController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create")
     public String createAccount(Account account) {
-
-        UserEntity user = userService.createUser(account.getOwnerName(), account.getOwnerName()+"123", Role.USER);
+        UserEntity user = userService.getOrCreateUser(account.getOwnerName(), account.getOwnerName(), Role.USER);
         accountService.createAccount(account, user);
+
         return "redirect:/account";
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{accountId}/edit")
-    public String editAccountForm(@PathVariable Long accountId, Model model) {
+    public String editAccountForm(@PathVariable String accountId, Model model) {
         Account account = accountService.findAccountById(accountId);
 
         model.addAttribute("account", account);
@@ -76,7 +76,7 @@ public class AccountController {
 
 
     @GetMapping("/{accountId}/view")
-    public String viewAccountForm(@PathVariable Long accountId, Model model) {
+    public String viewAccountForm(@PathVariable String accountId, Model model) {
         Account account = accountService.findAccountById(accountId);
 
         model.addAttribute("account", account);
@@ -95,7 +95,7 @@ public class AccountController {
     }
 
     @PostMapping("/credit")
-    public String credit( @RequestParam Long accountId, @RequestParam BigDecimal amount) {
+    public String credit( @RequestParam String accountId, @RequestParam BigDecimal amount) {
         accountService.credit(accountId, amount);
 
         return "redirect:/account/" + accountId +"/view";
@@ -110,14 +110,14 @@ public class AccountController {
     }
 
     @PostMapping("/debit")
-    public String debit(@RequestParam Long accountId, @RequestParam BigDecimal amount) {
+    public String debit(@RequestParam String accountId, @RequestParam BigDecimal amount) {
         accountService.debit(accountId, amount);
 
         return "redirect:/account/" + accountId +"/view";
     }
 
     @GetMapping("/{fromAccountId}/transfer")
-    public String transfer(@PathVariable Long fromAccountId, Model model) {
+    public String transfer(@PathVariable String fromAccountId, Model model) {
         model.addAttribute("fromAccountId", fromAccountId);
         model.addAttribute("body", "account/transfer");
 
@@ -126,12 +126,12 @@ public class AccountController {
 
     @PostMapping("/transfer")
     public String transfer(
-            @RequestParam Long fromAccountId,
-            @RequestParam Long toAccountId,
+            @RequestParam String fromAccountId,
+            @RequestParam String toAccountId,
             @RequestParam BigDecimal amount) {
 
         accountService.transfer(fromAccountId, toAccountId, amount);
-        return "redirect:/account";
+        return "redirect:/account/" + fromAccountId +"/view";
     }
 
 }

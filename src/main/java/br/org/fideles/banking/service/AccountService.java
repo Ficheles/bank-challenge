@@ -45,10 +45,18 @@ public class AccountService {
         );
     }
 
-    public Account findAccountById(Long accountId) {
-        AccountEntity accountEntity = accountRepository.findById(accountId).orElse(new AccountEntity());
+    private AccountEntity findAccountEntityById(String accountId) {
+        return accountRepository.findByAccountNumber(accountId).orElseThrow(
+                () -> new RuntimeException("Account not found: " + accountId)
+        );
+    }
 
-        return accountMapper.toModel(accountEntity);
+    public Account findAccountById(String accountId) {
+        try {
+            return accountMapper.toModel( this.findAccountEntityById(accountId));
+        }catch (Exception e) {
+            return new Account();
+        }
     }
 
 
@@ -69,7 +77,7 @@ public class AccountService {
     }
 
     @Transactional
-    public AccountEntity credit(Long accountId, BigDecimal amount) {
+    public AccountEntity credit(String accountId, BigDecimal amount) {
 //        AccountEntity account = accountRepository.findByIdWithLock(accountId)
 //                .orElseThrow(() -> new RuntimeException("Account not found"));
 
@@ -77,15 +85,15 @@ public class AccountService {
             throw new IllegalArgumentException("O valor do crédito deve ser positivo.");
         }
 
-        AccountEntity account = this.findById(accountId);
+        AccountEntity account = this.findAccountEntityById(accountId);
         account.setBalance(account.getBalance().add(amount));
 
         return accountRepository.save(account);
     }
 
     @Transactional
-    public AccountEntity debit(Long accountId, BigDecimal amount) {
-        AccountEntity account = accountRepository.findById(accountId)
+    public AccountEntity debit(String accountId, BigDecimal amount) {
+        AccountEntity account = accountRepository.findByAccountNumber(accountId)
                 .orElseThrow(() -> new RuntimeException("Account not found: " + accountId));
 
         if (amount.compareTo(BigDecimal.ZERO) <= 0) {
@@ -107,30 +115,11 @@ public class AccountService {
 
 
     @Transactional
-    public void transfer(Long fromAccountId, Long toAccountId, BigDecimal amount) {
-
-//        AccountEntity fromAccount = this.findAccountEntityById(fromAccountId);
-//        AccountEntity toAccount = this.findAccountEntityById(toAccountId);
-//
-//
-//        if (!hasEnoughFunds(fromAccount.getBalance(), amount)) {
-//            throw new RuntimeException("Insufficient funds in account: " + fromAccountId);
-//        }
-//
-//        // Deduct amount from source account
-//        debit(fromAccount, amount);
-//        // Add amount to destination account
-//        credit(toAccount, amount);
-
-
-
+    public void transfer(String fromAccountId, String toAccountId, BigDecimal amount) {
         // Deduct amount from source account
         this.debit(fromAccountId, amount);
         // Add amount to destination account
         this.credit(toAccountId, amount);
-
-//        accountRepository.save(fromAccount);
-//        accountRepository.save(toAccount);
     }
 
     private boolean hasEnoughFunds(BigDecimal balance, BigDecimal amount) {
@@ -148,16 +137,5 @@ public class AccountService {
                         accountEntity.getOwnerName(),
                         accountEntity.getBalance()))
                 .collect(Collectors.toList());
-    }
-
-    public Account updateAccount(Account account) {
-        AccountEntity accountEntity = accountRepository.findById(account.getId()).orElse(new AccountEntity());
-
-        accountEntity.setOwnerName(account.getOwnerName());
-        accountEntity.setAccountNumber(account.getAccountNumber());
-
-        accountRepository.save(accountEntity);
-
-        return accountMapper.toModel(accountEntity);
     }
 }

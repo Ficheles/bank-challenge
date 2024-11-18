@@ -7,7 +7,7 @@ import java.util.Collection;
 
 public class CustomUserDetails implements UserDetails {
     private Long id;
-    private Long accountId;
+    private String accountId;
     private String username;
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
@@ -17,7 +17,7 @@ public class CustomUserDetails implements UserDetails {
 
     public CustomUserDetails(
             Long id,
-            Long accountId,
+            String accountId,
             String username,
             String password,
             Collection<? extends GrantedAuthority> authorities
@@ -33,7 +33,7 @@ public class CustomUserDetails implements UserDetails {
         return id;
     }
 
-    public Long getAccountId() {
+    public String getAccountId() {
         return accountId;
     }
 
