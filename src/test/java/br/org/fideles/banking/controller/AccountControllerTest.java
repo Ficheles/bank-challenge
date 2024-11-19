@@ -2,128 +2,109 @@ package br.org.fideles.banking.controller;
 
 import br.org.fideles.banking.model.Account;
 import br.org.fideles.banking.service.AccountService;
+import br.org.fideles.banking.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.mockito.MockitoAnnotations;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.ui.Model;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
 
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(AccountController.class)
-public class AccountControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
+class AccountControllerTest {
 
     @Mock
     private AccountService accountService;
 
+    @Mock
+    private UserService userService;
+
     @InjectMocks
     private AccountController accountController;
 
-    private Account account;
+    private MockMvc mockMvc;
 
     @BeforeEach
-    public void setUp() {
-        // Setup do Account para os testes
-        account = new Account(1L,"123456","John Doe", BigDecimal.ZERO  );
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        mockMvc = MockMvcBuilders.standaloneSetup(accountController).build();
     }
 
     @Test
-    @WithMockUser(username = "admin", password = "admin123", roles = {"ADMIN"})
-    public void testShowCreateForm() throws Exception {
+    void testShowAccountList() throws Exception {
+        List<Account> mockAccounts = Arrays.asList(
+                new Account(1L, "123456", "Joãozinho", BigDecimal.valueOf(1000)),
+                new Account(2L, "654321", "Zequinha", BigDecimal.valueOf(2000))
+        );
 
-        Mockito.when(accountService.findAccountById(anyString())).thenReturn(account);
+        when(accountService.getAllAccounts()).thenReturn(mockAccounts);
 
+        mockMvc.perform(get("/account"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("layout"))
+                .andExpect(model().attributeExists("accounts"))
+                .andExpect(model().attribute("body", "account/list"));
 
-        mockMvc.perform(get("/account/create")
-                        .param("accountId", "1"))
-                .andExpect(status().isOk()) 
-                .andExpect(view().name("account/create"))
-                .andExpect(model().attributeExists("account"))
-                .andExpect(model().attribute("account", account));
-
-        verify(accountService).findAccountById(anyString());
+        verify(accountService, times(1)).getAllAccounts();
     }
-//
-//    @Test
-//    public void testShowCreateForm() throws Exception {
-//
-//        Mockito.when(accountService.findAccountById(anyLong())).thenReturn(account);
-//
-//        mockMvc.perform(get("/account/create").param("accountId", "1"))
-//                .andExpect(status().isOk())
-//                .andExpect(view().name("account/create"));
-//
-//        verify(accountService).findAccountById(anyLong());
-//    }
 
-//    @Test
-//    public void testCreateAccount() throws Exception {
-//        // Simular a criação da conta
-//        Mockito.doNothing().when(accountService).createAccount(any(), any());
-//
-//        mockMvc.perform(post("/account/create")
-//                        .param("ownerName", "John Doe")
-//                        .param("accountNumber", "123456"))
-//                .andExpect(status().is3xxRedirection())
-//                .andExpect(view().name("redirect:/account"));
-//
-//        // Verificar se o método do service foi chamado corretamente
-//        verify(accountService).createAccount("John Doe", "123456");
-//    }
-//
-//    @Test
-//    public void testCredit() throws Exception {
-//        // Simular o crédito
-//        Mockito.doNothing().when(accountService).credit(anyLong(), any(BigDecimal.class));
-//
-//        mockMvc.perform(post("/account/1/credit")
-//                        .param("amount", "100.00"))
-//                .andExpect(status().is3xxRedirection())
-//                .andExpect(view().name("redirect:/account/1"));
-//
-//        // Verificar se o método do service foi chamado corretamente
-//        verify(accountService).credit(1L, new BigDecimal("100.00"));
-//    }
-//
-//    @Test
-//    public void testDebit() throws Exception {
-//        // Simular o débito
-//        Mockito.doNothing().when(accountService).debit(anyLong(), any(BigDecimal.class));
-//
-//        mockMvc.perform(post("/account/1/debit")
-//                        .param("amount", "50.00"))
-//                .andExpect(status().is3xxRedirection())
-//                .andExpect(view().name("redirect:/account/1"));
-//
-//        // Verificar se o método do service foi chamado corretamente
-//        verify(accountService).debit(1L, new BigDecimal("50.00"));
-//    }
-//
-//    @Test
-//    public void testTransfer() throws Exception {
-//        // Simular a transferência
-//        Mockito.doNothing().when(accountService).transfer(anyLong(), anyLong(), any(BigDecimal.class));
-//
-//        mockMvc.perform(post("/account/transfer")
-//                        .param("fromAccountId", "1")
-//                        .param("toAccountId", "2")
-//                        .param("amount", "200.00"))
-//                .andExpect(status().is3xxRedirection())
-//                .andExpect(view().name("redirect:/account"));
-//
-//        // Verificar se o método do service foi chamado corretamente
-//        verify(accountService).transfer(1L, 2L, new BigDecimal("200.00"));
-//    }
+    @Test
+    void testShowCreateForm() throws Exception {
+        mockMvc.perform(get("/account/create"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("layout"))
+                .andExpect(model().attributeExists("account"))
+                .andExpect(model().attribute("body", "account/create"));
+    }
+
+    @Test
+    void testCreateAccount() throws Exception {
+        mockMvc.perform(post("/account/create")
+                        .param("ownerName", "Joãozinho")
+                        .param("accountNumber", "123456")
+                        .param("balance", "1000"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/account"));
+
+        verify(accountService, times(1)).createAccount(any(Account.class), any());
+    }
+
+    @Test
+    void testEditAccountForm() throws Exception {
+        Account mockAccount = new Account(1L, "123456", "Joãozinho", BigDecimal.valueOf(1000));
+
+        when(accountService.findAccountById("1")).thenReturn(mockAccount);
+
+        mockMvc.perform(get("/account/1/edit"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("layout"))
+                .andExpect(model().attributeExists("account"))
+                .andExpect(model().attribute("body", "account/edit"));
+
+        verify(accountService, times(1)).findAccountById("1");
+    }
+
+    @Test
+    void testViewAccountForm() throws Exception {
+        Account mockAccount = new Account(1L, "123456", "Joãozinho", BigDecimal.valueOf(1000));
+
+        when(accountService.findAccountById("1")).thenReturn(mockAccount);
+
+        mockMvc.perform(get("/account/1/view"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("layout"))
+                .andExpect(model().attributeExists("account"))
+                .andExpect(model().attribute("body", "account/view"));
+
+        verify(accountService, times(1)).findAccountById("1");
+    }
 }
