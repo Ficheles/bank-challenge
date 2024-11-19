@@ -17,9 +17,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 
-
-import java.util.Map;
-
 @SpringBootApplication(scanBasePackages = "br.org.fideles.banking")
 @ComponentScan(basePackages = "br.org.fideles.banking")
 @EntityScan(basePackages = "br.org.fideles.banking.entity")
@@ -59,7 +56,7 @@ public class BankingApplication {
         }
     }
 
-    private void createAccountIfNotExists(String accountNumber, String ownerName,  UserEntity user) {
+    private void createAccountIfNotExists(String accountNumber, String ownerName, UserEntity user) {
         if (!accountRepository.existsByAccountNumber(accountNumber)) {
             AccountEntity account = new AccountEntity();
 
@@ -67,10 +64,11 @@ public class BankingApplication {
             account.setOwnerName(ownerName);
             account.setBalance(BigDecimal.ZERO);
 
-            // accountRepository.save(account);
+            accountRepository.save(account);
             account.setUser(user);
 
-            accountRepository.save(account);        }
+            accountRepository.save(account);
+        }
     }
 }
 

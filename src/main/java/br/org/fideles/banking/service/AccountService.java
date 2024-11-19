@@ -1,11 +1,9 @@
 package br.org.fideles.banking.service;
 
-import br.org.fideles.banking.config.SecurityConfig;
 import br.org.fideles.banking.entity.AccountEntity;
 import br.org.fideles.banking.entity.UserEntity;
 import br.org.fideles.banking.mapper.AccountMapper;
 import br.org.fideles.banking.model.Account;
-import br.org.fideles.banking.model.User;
 import br.org.fideles.banking.repository.AccountRepository;
 import br.org.fideles.banking.exception.InsufficientFundsException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +23,6 @@ import java.util.stream.Collectors;
 
 
 @Service
-
 public class AccountService {
     private final AccountMapper accountMapper;
     private final AccountRepository accountRepository;
