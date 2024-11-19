@@ -1,12 +1,4 @@
 FROM openjdk:17-jdk-slim
-WORKDIR /app
-
-COPY target/*.jar app.jar
-
-EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
-
-FROM openjdk:17-jdk-slim
 
 RUN apt-get update && apt-get install -y \
     git \
@@ -15,7 +7,7 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
-RUN git clone https://github.com/ficheles/bank-challenge.git .
+COPY . .
 
 RUN mvn clean package -DskipTests
 
