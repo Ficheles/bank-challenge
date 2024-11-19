@@ -5,9 +5,9 @@
         <a class="navbar-brand fw-bold" href="index.html">SecureBank</a>
       </div>
       <div sec:authorize="isAuthenticated()">
-        <a class="navbar-brand fw-bold" href="index.html"
-          >SecureBank - <span sec:authentication="name"></span
-        ></a>
+        <a class="navbar-brand fw-bold" href="/">
+          SecureBank - <span sec:authentication="name"></span>
+        </a>
       </div>
 
       <button
